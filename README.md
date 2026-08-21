@@ -15,6 +15,61 @@ Agentic AI represents a paradigm shift from passive model interaction to proacti
 
 ---
 
+## 🤖 What is an AI Agent?
+
+An **AI Agent** transforms a standalone language model into an autonomous problem solver capable of executing complex goals ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271870)):
+
+$$\text{AI Agent} = \text{LLM} + \text{Tools} + \text{Loop} + \text{Reasoning Patterns}$$
+
+- **LLM**: The "brain" that reasons and decides what to do.
+- **Tools**: Functions, APIs, databases, or services the agent can call.
+- **Loop**: Repeated cycle of *"think $\rightarrow$ act $\rightarrow$ observe $\rightarrow$ think again"* until the goal is met.
+- **Reasoning Patterns**: Strategies like planning, reflection, and multi-step workflows that guide how the agent uses the loop.
+
+---
+
+### 🔄 The Agent Execution Loop
+
+The core dynamic of an AI agent is its continuous execution loop:
+
+![The Agent Execution Loop](assets/agent_execution_loop.png)
+
+```
+Perceive (Input/Observation) ──► Reason (Select Next Step) ──► Act (Call Tool/Respond) ──► Observe (Receive Result/Feedback) ──► (Repeat Loop)
+```
+
+---
+
+### ⚡ Key Contrast: Chatbot vs. AI Agent
+
+- **Chatbot**: $\text{Prompt} \longrightarrow \text{LLM} \longrightarrow \text{Single Answer}$
+- **Agent**: $\text{Prompt} \longrightarrow \text{LLM} \longrightarrow \text{Choose Tool} \longrightarrow \text{Execute} \longrightarrow \text{Observe} \longrightarrow \text{LLM Again} \longrightarrow \text{More Tool Calls} \longrightarrow \text{Final Answer}$ ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271870))
+
+#### Standalone LLM vs. (LLM-based) AI Agent
+
+![LLM vs AI Agent Comparison](assets/llm_vs_ai_agent.png)
+
+| Capability | Standalone LLM | AI Agent (LLM-based) |
+| :--- | :--- | :--- |
+| **Knowledge Access** | Training data + provided context (prompt); no built-in live access | Training + live tools (dynamic) |
+| **Actions** | Generate text | Search, compute, call APIs, write code |
+| **Memory** | None between calls | Working + persistent memory |
+| **Planning** | Single-pass response | Multi-step planning & iteration |
+| **Self-Correction** | Can do internal consistency checks; ext. verification requires tools or retrieval | Observes results, retries on error |
+| **State** | No built-in persistent state (state is app-managed) | Maintains context across steps |
+
+---
+
+### 🚀 Why "Agentic" AI Matters
+
+> *Moving from "AI that talks" to "AI that does."*
+
+- **Automates Multi-Step Tasks**: Handles complex workflows autonomously instead of just answering questions.
+- **Interacts with Real Systems**: Connects directly with databases, enterprise applications, and cloud services.
+- **Enables Goal-Oriented Behavior**: Keeps working and iterating until a defined objective is fully achieved ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271870)).
+
+---
+
 ## 🎓 Course Curriculum: Oracle Agentic AI Foundations
 
 This repository aligns with and builds upon concepts from the [Oracle Agentic AI Foundations](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946) course.
