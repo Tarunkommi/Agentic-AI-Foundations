@@ -14,6 +14,29 @@ Agentic AI represents a paradigm shift from passive model interaction to proacti
 - **Safety & Alignment**: Guardrails, human-in-the-loop (HITL) validation, and execution monitoring.
 
 ---
+
+## 🎓 Course Curriculum: Oracle Agentic AI Foundations
+
+This repository aligns with and builds upon concepts from the [Oracle Agentic AI Foundations](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946) course.
+
+### 🎯 What You’ll Learn
+The course covers AI-agent architecture, LLMs, tools, execution loops, reasoning patterns, safety guardrails, LangChain, the Model Context Protocol (MCP), and the OpenAI Responses API and Agents SDK. It then applies these topics to OCI Enterprise AI and Oracle AI Database ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
+
+By the end, you should be able to design agents with LangChain and the OpenAI agent stack, incorporate MCP into workflows, build agents on OCI Enterprise AI Platform, and use Oracle AI Database capabilities for agentic solutions ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
+
+---
+
+### 📚 Course Structure
+
+1. **Introduction to AI Agents**: Agent definitions, components, reasoning, a first-agent walkthrough, and guardrails ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
+2. **LangChain for AI Agents**: LangChain basics, building an agent, demos, and internal agent behavior ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
+3. **Introduction to MCP**: MCP concepts and components, connecting an MCP server to an agent, and practical server examples ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
+4. **OpenAI Responses API and Agents SDK**: OpenAI agent stack, APIs, SDKs, tool/function calling, multi-agent handoffs, safety, and a customer-support-agent demo ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
+5. **Agentic AI for OCI Enterprise AI**: Agent lifecycle and runtime, OCI Enterprise AI Platform and Agents, deployment, and scaling ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
+6. **Agentic AI for Oracle AI Database**: Vector search, Private Agent Factory, and an Autonomous AI Database MCP server ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
+
+---
+
 ## 🛠️ Getting Started
 
 ### Prerequisites
@@ -21,6 +44,17 @@ Agentic AI represents a paradigm shift from passive model interaction to proacti
 - Python 3.10+ / Node.js 18+
 - API Credentials for target LLM providers
 
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/Tarunkommi/Agentic-AI-Foundations.git
+
+# Navigate into the project directory
+cd Agentic-AI-Foundations
+```
+
+---
 
 ## 📝 License
 
