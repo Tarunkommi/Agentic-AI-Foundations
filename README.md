@@ -21,21 +21,12 @@ Agentic AI represents a paradigm shift from passive model interaction to proacti
 - Python 3.10+ / Node.js 18+
 - API Credentials for target LLM providers
 
-### Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/Tarunkommi/Agentic-AI-Foundations.git
-
-# Navigate into the project directory
-cd Agentic-AI-Foundations
-```
-
----
 
 ## 📝 License
 
 This project is open-source under the [MIT License](LICENSE).
+
+---
 
 ## 🧠 How Large Language Models (LLMs) Are Built and Deployed
 
