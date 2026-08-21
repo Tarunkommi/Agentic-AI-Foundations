@@ -20,15 +20,6 @@ Agentic AI represents a paradigm shift from passive model interaction to proacti
 - Python 3.10+ / Node.js 18+ (depending on implementation module)
 - API Keys / Credentials for target LLM providers & tools
 
-### Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/your-username/Agentic-AI-Foundations.git
-
-# Navigate into the project directory
-cd Agentic-AI-Foundations
-```
 
 ## 📝 License
 
