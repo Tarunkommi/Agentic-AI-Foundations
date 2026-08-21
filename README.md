@@ -70,6 +70,184 @@ Perceive (Input/Observation) ──► Reason (Select Next Step) ──► Act (
 
 ---
 
+## 🧩 AI Agent Core Components
+
+An AI agent is built by combining an LLM with instructions, tools, memory or state, and an execution loop. These components enable it to understand a goal, select actions, use external systems, evaluate results, and produce a useful final response ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271870)).
+
+![AI Agent Core Components Architecture](assets/ai_agent_core_components.png)
+
+```
+User Goal ──► LLM Reasoning ──► Tool Action ──► Observation ──► Next Decision / Final Response
+```
+
+The agent repeats this cycle until it has enough information to complete the task or reaches a stopping condition.
+
+- **Input**: User request, system instructions, and available context.
+- **Reasoning**: The LLM interprets the request and decides whether it can answer directly or needs an action.
+- **Action**: The agent calls a tool or function.
+- **Observation**: The tool result is returned to the agent.
+- **Final Response**: The LLM converts the result into a clear user-facing answer.
+
+---
+
+### 1. Large Language Model (LLM) - The Reasoning Engine
+
+The **LLM** is the agent's central reasoning engine.
+- Understands natural-language instructions and user questions.
+- Interprets current context and determines the next best action.
+- Can generate a direct response, choose a tool, form tool arguments, or decide whether another step is required.
+- *Knowledge boundaries*: Does not inherently possess live knowledge, private enterprise data access, or direct external system capabilities—these are unlocked via tools and retrieval components.
+
+> **Important**: The LLM makes decisions based on system instructions, conversation context, tool definitions, and results from previous actions.
+
+---
+
+### 2. Instructions & System Prompts
+
+Instructions define the agent's role, boundaries, style, and operational objectives. Clear instructions reduce ambiguity in the LLM's decisions and increase reliability:
+
+- **Role**: e.g., *"You are an enterprise customer support assistant."*
+- **Goal**: The targeted outcome the agent must achieve.
+- **Scope**: Boundaries defining which requests the agent should handle.
+- **Constraints**: Strict guardrails avoiding unauthorized data exposure or unapproved transactions.
+- **Tool Guidance**: Specific criteria describing when and how tools should be called.
+- **Response Format**: Output expectations (e.g., concise summary, JSON schema, step-by-step markdown report).
+- **Escalation Rules**: Protocols for asking clarification or handing off tasks to human agents.
+
+---
+
+### 3. Tools & Tool Calling
+
+Tools give an agent the ability to interact with the world beyond text generation ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271870)).
+
+#### Common Tool Types
+- **Database Queries**: Retrieving enterprise relational or vector data.
+- **APIs**: Integrating weather, inventory, CRM, payment, calendar, or ticketing platforms.
+- **Search & Retrieval**: Document search across enterprise knowledge bases (RAG).
+- **Code Execution**: Sandboxed Python/Bash tools for data analysis and calculation.
+- **File System Tools**: Reading, generating, or modifying local and cloud files.
+- **Communication Tools**: Dispatching emails, Slack messages, or push notifications.
+
+#### Tool Definition Elements
+| Element | Purpose |
+| :--- | :--- |
+| **Tool Name** | Identifies the unique action (e.g., `get_customer_order`). |
+| **Description** | Tells the LLM *when* and *why* the tool should be invoked. |
+| **Input Schema** | Defines required and optional parameters (JSON Schema). |
+| **Output** | Returns structured data or execution results back to the agent. |
+| **Permissions** | Limits authorization and protects sensitive enterprise systems. |
+
+#### Tool Calling Flow
+The LLM does **not** execute the tool directly. The agent runtime receives the tool request from the LLM, executes the call securely against external services, feeds the observation back into context, and allows the LLM to decide the next step.
+
+```
+User: "Where is my order?" 
+  ──► Agent recognizes order lookup needed 
+  ──► LLM selects order_tracking tool 
+  ──► Runtime passes Order ID to API 
+  ──► Tool returns shipment status 
+  ──► LLM summarizes status for User
+```
+
+---
+
+### 4. Context, Memory, and Retrieval
+
+An agent requires structured context to make coherent decisions across multi-turn interactions.
+
+```mermaid
+graph TD
+    A["Context & Memory"] --> B["Short-Term Memory"]
+    A --> C["Long-Term Memory"]
+    A --> D["Knowledge & Retrieval (RAG)"]
+    
+    B --> B1["Session dialogue history"]
+    B --> B2["Prior tool calls & results"]
+    
+    C --> C1["Persistent user preferences"]
+    C --> C2["Cross-session facts & history"]
+    
+    D --> D1["Vector database search"]
+    D --> D2["Enterprise document retrieval"]
+```
+
+- **Short-Term Memory**: Information retained during the active workflow/session (maintains dialogue continuity, tracks prior tool calls, prevents duplicate queries).
+- **Long-Term Memory**: External persistence preserving user preferences and facts across sessions (requires governance, retention policies, and privacy controls).
+- **Knowledge & Retrieval (RAG)**: Dynamically fetches relevant passages from enterprise knowledge bases, vector stores, or APIs to ground model answers with zero pre-training cost.
+
+---
+
+### 5. The Agent Loop & Stopping Conditions
+
+The **Agent Loop** drives iterative execution:
+1. Receive user goal.
+2. Read system instructions & context.
+3. Decide whether to answer directly or call a tool.
+4. Generate tool inputs if required.
+5. Runtime executes tool & captures observation.
+6. Evaluate if goal is accomplished.
+7. Repeat loop or emit final response.
+
+#### Essential Stopping Conditions:
+- Goal successfully completed.
+- Sufficient information gathered.
+- Maximum step/iteration limit reached.
+- Unrecoverable tool failure encountered.
+- Human review or clarification required.
+- Safety policy guardrail triggered.
+
+---
+
+### 6. Planning, Reasoning & State Management
+
+- **Planning & Reasoning**: Deconstructs high-level objectives into sequential micro-steps (e.g., *"Prepare weekly sales report"* $\rightarrow$ *query DB $\rightarrow$ calculate totals $\rightarrow$ generate report $\rightarrow$ lookup manager email $\rightarrow$ confirm sending $\rightarrow$ send email*).
+- **State Management**: Maintains a structured record of user intent, execution steps, tool call history, intermediate outputs, errors, retries, and approval flags. Essential for long-running and multi-agent workflows.
+
+---
+
+### 7. Safety Guardrails & Human-in-the-Loop
+
+Guardrails control what an agent can read, write, and execute across multiple checkpoints:
+
+- **Input Validation**: Filters out malformed, malicious, or out-of-scope prompts (jailbreak prevention).
+- **Authorization & RBAC**: Verifies user access rights before executing sensitive tool calls.
+- **Action Restrictions**: Restricts destructive operations (e.g., database deletion, unapproved funds transfer).
+- **Human Approval (HITL)**: Requires human confirmation before high-impact consequential actions.
+- **Output Filtering**: Prevents PII leakage or harmful text generation.
+- **Rate Limits & Auditing**: Monitors timeouts, tool call quotas, and execution logs.
+
+---
+
+### 🛡️ Real-World Example: Customer Support Agent
+
+Below is an enterprise workflow showing how core components cooperate to process a customer request: *"Can you cancel my order 12345?"*
+
+![Customer Support Agent Workflow](assets/support_agent_workflow.png)
+
+| Component | Role & Function in Workflow |
+| :--- | :--- |
+| **Instructions** | Defines cancellation eligibility policy and human approval rules. |
+| **LLM** | Interprets intent, checks required order parameters, and selects actions. |
+| **Context** | Passes customer authentication token and session history. |
+| **Tool** | Queries order DB to inspect order status for ID `12345`. |
+| **Guardrail** | Verifies customer ownership of order `12345` and confirms cancellation window. |
+| **Loop** | Retrieves details, evaluates eligibility, and determines if approval is needed. |
+| **Human Confirmation** | Prompts support lead/user for high-value order cancellation confirmation. |
+| **Final Response** | Generates clear confirmation message and refund processing status to user. |
+
+---
+
+### 🔑 Key Takeaways
+
+1. An AI agent is a unified system combining an **LLM**, **Instructions**, **Tools**, **Memory**, an **Execution Loop**, and **Guardrails**.
+2. The **LLM** makes decisions; **Tools** execute actions and fetch real-world data.
+3. **Context and Memory** keep interactions consistent, personal, and relevant.
+4. The **Agent Loop** empowers autonomous multi-step problem solving.
+5. **State Management** makes long-running workflows recoverable and auditable.
+6. **Guardrails & Human-in-the-Loop** controls are mandatory for secure enterprise deployment.
+
+---
+
 ## 🎓 Course Curriculum: Oracle Agentic AI Foundations
 
 This repository aligns with and builds upon concepts from the [Oracle Agentic AI Foundations](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946) course.
