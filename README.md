@@ -248,6 +248,165 @@ Below is an enterprise workflow showing how core components cooperate to process
 
 ---
 
+## 🧠 AI Agent Reasoning Patterns
+
+**Reasoning patterns** are structured methods that guide how an AI agent thinks through a task, chooses actions, uses tools, evaluates intermediate results, and reaches a final answer. This core topic is covered in the 8-minute lesson *Reasoning Patterns in AI Agents* in the **Introduction to AI Agents** module of Oracle’s [Agentic AI Foundations (2026)](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271872) course.
+
+![AI Agent Reasoning Patterns](assets/agent_reasoning_patterns.jpg)
+
+---
+
+### ❓ Why AI Agents Need Reasoning
+
+Unlike a basic chatbot that generates a single static response, an autonomous AI agent must often execute multiple steps to satisfy a user's goal. It must determine what information is missing, select the appropriate tools, interpret external observations, adapt to unexpected results, and decide whether further actions are required.
+
+#### The Typical Agent Reasoning Cycle
+
+$$\text{Input} \longrightarrow \text{Reason} \longrightarrow \text{Action} \longrightarrow \text{Observation} \longrightarrow \text{Repeat or Respond}$$
+
+```mermaid
+flowchart LR
+    A["Input (Prompt / Context)"] --> B["Reason (Determine Next Step)"]
+    B --> C["Action (Call Tool / API)"]
+    C --> D["Observation (Receive Output)"]
+    D --> E{"Work Remaining?"}
+    E -- Yes --> B
+    E -- No --> F["Final Response"]
+```
+
+| Phase | Description & Responsibilities |
+| :--- | :--- |
+| **Input** | Receives the user request, system instructions, active context, and prior interaction history. |
+| **Reason** | The agent's LLM analyzes current state, identifies missing data, and determines the single best next step. |
+| **Action** | The agent executes an external action: invoking an API, running sandboxed code, searching a vector database, or querying a system. |
+| **Observation** | The agent receives, parses, and interprets the observation/result produced by the executed action. |
+| **Repeat or Respond** | The agent evaluates progress: if sub-goals remain incomplete, it repeats the cycle; otherwise, it formats the final response. |
+
+---
+
+### 🛠️ Common AI Agent Reasoning Patterns
+
+AI agents employ different reasoning patterns based on task complexity, environmental uncertainty, and tool requirements. Below are the 5 primary reasoning patterns:
+
+![AI Agent Reasoning Workflows](assets/agent_reasoning_workflows.jpg)
+
+---
+
+#### 1. Direct Response Pattern
+
+The model answers immediately using its internal parametric knowledge or given prompt context, without invoking external tools or executing a multi-step loop.
+
+- **Use Case**: Simple, stable, conversational, or informational queries that require no real-time data or computation.
+- **Example**: *"Explain what an API is."*
+- **Mechanism**: $\text{Input} \longrightarrow \text{LLM Generation} \longrightarrow \text{Output}$
+- **Limitations**: Inappropriate when the request demands up-to-date real-time data, complex mathematical calculations, external enterprise database lookup, or empirical verification.
+
+---
+
+#### 2. Chain-of-Thought (CoT) Decomposition Pattern
+
+The agent breaks down a complex, multi-faceted request into smaller, logically ordered subproblems before generating a final consolidated answer.
+
+- **Use Case**: Tasks with multiple constraints, logical puzzles, multi-part calculations, or structured analytical evaluations.
+- **Example**: *Recommending a laptop for a user.*
+  - Step 1: Assess budget constraint.
+  - Step 2: Evaluate intended use case (e.g., gaming vs. video editing vs. general use).
+  - Step 3: Filter processor and memory requirements.
+  - Step 4: Compare battery life and display specs.
+  - Step 5: Select top matching models and output recommendation.
+- **Primary Benefit**: Dramatically reduces reasoning errors and prevents the agent from missing critical sub-tasks.
+
+---
+
+#### 3. ReAct Pattern (Reason + Act)
+
+The **ReAct** (Reasoning + Acting) pattern alternates iteratively between explicit thought generation (*Reason*) and execution of tool actions (*Act*), receiving real-world observations (*Observation*) after each step.
+
+$$\text{Reason} \longrightarrow \text{Action} \longrightarrow \text{Observation} \longrightarrow \text{Reason} \longrightarrow \dots \longrightarrow \text{Respond}$$
+
+```mermaid
+flowchart TD
+    User["User Query: 'Check flight prices from NYC to London'"] --> R1["Reason: Need to search live flight API for NYC to London"]
+    R1 --> A1["Action: Call flight_search(from='NYC', to='LON')"]
+    A1 --> O1["Observation: Returned flight list & prices"]
+    O1 --> R2["Reason: Analyze cheapest options & battery/layover constraints"]
+    R2 --> Resp["Respond: Present top 3 flight recommendations to user"]
+```
+
+- **Example Flow**: A user asks for current flight prices. The agent reasons that external data is required, calls a flight search API tool, observes returned price data, compares flight options, and delivers a recommended itinerary.
+- **Main Advantage**: Allows the agent to ground its decisions in live, real-world data and external tools rather than relying solely on static model memory.
+
+---
+
+#### 4. Plan-and-Execute Pattern
+
+The agent creates an explicit multi-step plan up front, then systematically executes each task in sequence while tracking progress and adjusting the plan when new information emerges.
+
+```mermaid
+flowchart TD
+    A["Understand Final Goal"] --> B["Formulate Multi-Step Plan"]
+    B --> C["Execute Step 1"]
+    C --> D["Execute Step 2"]
+    D --> E["Track Progress & Check Results"]
+    E --> F{"Conditions Changed or Error?"}
+    F -- Yes --> G["Re-Plan / Adjust Tasks"]
+    G --> C
+    F -- No --> H["Complete Plan & Confirm Outcome"]
+```
+
+- **Workflow**:
+  1. Understand the overarching objective.
+  2. Divide the goal into ordered tasks.
+  3. Execute each task sequentially.
+  4. Monitor progress and state.
+  5. Dynamically revise/re-plan if tool outputs or environmental conditions change.
+- **Customer Support Example**:
+  1. *Identify customer identity and issue context.*
+  2. *Retrieve account and transaction details via API.*
+  3. *Evaluate refund policy eligibility and constraints.*
+  4. *Resolve ticket or escalate to human agent.*
+  5. *Confirm outcome and dispatch notification to customer.*
+- **Strengths & Risks**: Ideal for long, complex, multi-stage workflows. However, a rigid plan can become invalid if early steps return unexpected results—making dynamic **re-planning** essential.
+
+---
+
+#### 5. Reflection & Self-Correction Pattern
+
+The agent reviews its own draft response, code execution output, or proposed tool action against constraints and quality rules before releasing the final answer.
+
+```mermaid
+flowchart TD
+    A["Generate Draft Response / Code"] --> B["Execute or Inspect Draft"]
+    B --> C["Audit / Self-Check against Criteria"]
+    C --> D{"Passed Quality & Safety Audit?"}
+    D -- No (Errors / Gaps) --> E["Refine Draft / Fix Code"]
+    E --> B
+    D -- Yes --> F["Emit Verified Final Output"]
+```
+
+- **Typical Audit Checks**:
+  - *Completeness*: Did the response answer all parts of the user request?
+  - *Factual Support*: Is every claim backed up by tool observations or verified facts?
+  - *Execution Integrity*: Did the tool or code return runtime errors or missing data?
+  - *Format Compliance*: Does the output follow the user's requested format (JSON schema, table, etc.)?
+  - *Safety & Guardrails*: Does the action satisfy system safety and policy constraints?
+- **Code Execution Example**: An agent writes a Python script, runs it in a sandbox, observes a `SyntaxError` or `KeyError`, analyzes the error traceback, modifies the code, and re-executes until clean execution is achieved.
+- **Benefits & Trade-offs**: Dramatically increases output accuracy, reliability, and code correctness. However, extra reflection passes increase response latency and API compute cost.
+
+---
+
+### 📊 Comparative Analysis of Reasoning Patterns
+
+| Reasoning Pattern | Execution Style | Tool Interaction | Primary Best Use Case | Key Advantage | Main Limitation / Trade-off |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Direct Response** | Single-pass answer | None | General knowledge, simple Q&A | Instant speed, zero tool overhead | Hallucination risk on dynamic facts |
+| **Chain-of-Thought** | Step-by-step reasoning | Optional / Internal | Logical problems, math, multi-constraint analysis | Higher reasoning precision | Token cost increases slightly |
+| **ReAct** | Interleaved Think-Act-Observe loop | High (Frequent tool calling) | Live data lookup, API actions, multi-turn tool tasks | Up-to-date facts & dynamic external execution | Can get stuck in loops if unconstrained |
+| **Plan-and-Execute** | Macro-planning + sequential execution | Moderate to High | Multi-stage enterprise processes, long workflows | Clear task organization & progress tracking | Risk of plan invalidation without replanning |
+| **Reflection / Self-Correction** | Audit-Refine evaluation cycle | High (Validation & code execution) | Code generation, strict schema formatting, critical analysis | Maximum accuracy, reliability & self-repair | Increased latency & higher token cost |
+
+---
+
 ## 🎓 Course Curriculum: Oracle Agentic AI Foundations
 
 This repository aligns with and builds upon concepts from the [Oracle Agentic AI Foundations](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946) course.
