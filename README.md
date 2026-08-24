@@ -817,7 +817,183 @@ mindmap
 
 ---
 
+## 🦜 LangChain for AI Agents
+
+Welcome to **Module 2: LangChain for AI Agents**. This module introduces how to use LangChain's core components to create and understand autonomous AI agents.
+
+> [!NOTE]  
+> **Module Orientation**: This lecture serves as an orientation for the module, guiding you through the transition from LangChain fundamentals to hands-on agent construction, followed by a deep dive into the underlying agent workflow.
+
+---
+
+### 🗺️ What Follows in this Module
+
+1. **Introduction to LangChain & Main Building Blocks**: Overview of LangChain primitives and a hands-on demonstration of its core building blocks (models, prompts, tools, parsers, and memory).
+2. **Building Your First AI Agent**: A guided walkthrough and demo showing how to assemble your first functional AI agent with LangChain.
+3. **Internal Agent Mechanics (2 Lessons)**: Two dedicated lessons examining how a LangChain agent works internally—focusing on state transitions, tool execution loops, and prompt formatting.
+
+```mermaid
+flowchart LR
+    A["1. LangChain Fundamentals\n(Building Blocks Demo)"] --> B["2. First AI Agent Construction\n(Hands-on Walkthrough & Demo)"]
+    B --> C["3. Agent Internal Mechanics\n(2 Deep-Dive Lessons)"]
+```
+
+| Lesson / Topic | Objective | Key Highlights |
+| :--- | :--- | :--- |
+| **LangChain Intro & Building Blocks** | Understand the core primitives of LangChain. | Demonstrates prompts, model integrations, tools, and chains. |
+| **First AI Agent Walkthrough** | Construct a working AI agent from scratch. | Integrates tools, reasoning loops, and LLM calls into a functional agent. |
+| **Internal Workflows (2 Lessons)** | Inspect internal agent behavior and mechanics. | Explores execution loops, agent state management, and internal prompt structures. |
+
+---
+
+In short, this module systematically moves from **LangChain fundamentals** to **hands-on agent construction**, and concludes by explaining the **underlying agent workflow**.
+
+---
+
+## 🔗 Introduction to LangChain
+
+**LangChain** is a framework for building applications powered by large language models (LLMs), especially AI agents. It helps developers connect an LLM to prompts, tools, external data, memory, and multi-step workflows ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271875)).
+
+![LangChain Architecture Overview](assets/langchain_architecture.png)
+
+---
+
+### ❓ Why LangChain?
+
+An LLM alone can generate text, but it cannot reliably access current information, call APIs, query databases, or complete multi-step tasks by itself. LangChain provides reusable components to turn an LLM into an agent that can reason, choose tools, act, and use results in later steps ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271875)).
+
+---
+
+### 🧩 Core Building Blocks
+
+LangChain decomposes agentic architectures into seven fundamental building blocks:
+
+```mermaid
+flowchart TD
+    subgraph CoreBuildingBlocks["LangChain Core Building Blocks"]
+        Model["1. Model (LLM Engine)"]
+        Prompt["2. Prompt Template"]
+        Chain["3. Chain (Sequential Workflow)"]
+        Tool["4. Tool (APIs / DB / Search)"]
+        Agent["5. Agent (Dynamic Reasoner)"]
+        Memory["6. Memory / State"]
+        Retriever["7. Retriever (RAG Knowledge)"]
+    end
+
+    Prompt --> Model
+    Model --> Chain
+    Chain --> Agent
+    Tool --> Agent
+    Memory --> Agent
+    Retriever --> Agent
+```
+
+| Component | Description & Role |
+| :--- | :--- |
+| **Model** | The LLM that interprets prompts and produces responses. |
+| **Prompt** | Instructions and context supplied to the model; prompt templates make these reusable and dynamic. |
+| **Chain** | A defined sequence of operations, such as $\text{Prompt} \rightarrow \text{LLM} \rightarrow \text{Formatted Output}$. |
+| **Tool** | A callable capability for the agent, such as web search, database retrieval, calculator, API call, or file access. |
+| **Agent** | An LLM-based system that selects tools and decides the next action needed to achieve a goal. |
+| **Memory / State** | Information retained across turns or workflow steps so the application can maintain context. |
+| **Retriever** | A component that finds relevant documents or records, commonly used in retrieval-augmented generation (RAG). |
+
+---
+
+### 🔄 Typical Agent Flow
+
+A typical LangChain agent follows an iterative decision-and-action cycle to execute tasks:
+
+```mermaid
+flowchart TD
+    A["1. User provides a goal or question"] --> B["2. Agent interprets request using LLM"]
+    B --> C{"3. Requires tool or more info?"}
+    C -- Yes --> D["4. Invoke selected tool (Search / Database / API)"]
+    D --> E["5. Observe tool output & evaluate progress"]
+    E --> C
+    C -- No --> F["6. Return final response to user"]
+```
+
+1. **User Goal**: A user provides a goal or question.
+2. **Interpretation**: The agent interprets the request using an LLM.
+3. **Tool Decision**: The agent decides whether it needs a tool or more information.
+4. **Tool Invocation**: It invokes the selected tool, such as a search service or database.
+5. **Observation**: It observes the tool output and evaluates whether another action is required.
+6. **Final Response**: It returns a final response when the task is complete.
+
+> **Key Idea**: This repeated decision-and-action cycle is what makes the system **agentic**, rather than a single prompt-and-response interaction.
+
+---
+
+### 💡 Key Idea: LLM + Tools + Control Loop
+
+A practical AI agent generally consists of:
+
+$$\text{Agent} = \text{LLM} + \text{Tools} + \text{Control Loop}$$
+
+- **LLM**: Provides language understanding and reasoning.
+- **Tools**: Let the system interact with external systems and perform actions.
+- **Control Loop**: Allows the agent to observe results, revise its plan, and continue until it reaches an answer.
+
+---
+
+### 💬 Practical Example: Order Processing Agent
+
+For the request: *"Find the latest order status for customer 102 and draft a reply"*, a LangChain agent executes the following workflow:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant Agent as LangChain Agent
+    participant LLM as Reasoning Engine
+    participant DB as Order DB Tool
+    
+    User->>Agent: "Find latest order status for customer 102 and draft reply"
+    Agent->>LLM: Analyze request & select tool
+    LLM-->>Agent: Action: Call get_order_status(customer_id=102)
+    Agent->>DB: Query customer order database
+    DB-->>Agent: Return: Order #54321 - Shipped (ETA: Tomorrow)
+    Agent->>LLM: Evaluate observation & format reply
+    LLM-->>Agent: Final Response Generated
+    Agent->>User: "Order #54321 is currently shipped with ETA tomorrow..."
+```
+
+1. **Identify Need**: Recognizes that it needs customer-order data.
+2. **Call Tool**: Calls an order-management or database tool.
+3. **Read Status**: Reads and parses the returned status.
+4. **Generate Reply**: Generates a clear customer-support response.
+
+LangChain provides the structure for connecting these parts into a reliable workflow.
+
+---
+
+### ⚡ Benefits of LangChain
+
+- **Reduces Custom Code**: Reduces the amount of custom orchestration code needed to connect LLMs and tools.
+- **Multi-Provider Support**: Supports integration with multiple LLM providers and external tools.
+- **Simplifies RAG & Tool Agents**: Makes it easier to build RAG applications and tool-using agents.
+- **Modular Design**: Enables modular design where prompts, models, tools, and workflows can be changed independently.
+- **Advanced Workflows**: Supports more complex workflows such as multi-agent systems and human approval steps.
+
+---
+
+### 📚 Important Terms to Remember
+
+| Term | Meaning |
+| :--- | :--- |
+| **Chain** | A fixed workflow with predefined steps. |
+| **Agent** | A dynamic workflow where the LLM chooses actions and tools based on context. |
+| **Tool Calling** | Structured invocation of an external function or service. |
+| **RAG** | Retrieval-Augmented Generation: retrieving relevant knowledge before asking the LLM to answer. |
+| **State** | Data preserved while a workflow runs. |
+| **Guardrails** | Controls that constrain unsafe, invalid, or unauthorized behavior. |
+
+---
+
 ## 📝 License
 
 This project is open-source under the [MIT License](LICENSE).
+
+
 
