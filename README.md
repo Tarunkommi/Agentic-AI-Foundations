@@ -1000,6 +1000,160 @@ sequenceDiagram
 
 ---
 
+## 🛠️ Building Your First Agent Using LangChain
+
+This hands-on lesson comes from Module 2 (**"LangChain for AI Agents"**) of Oracle's [Agentic AI Foundations (2026)](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271876) course ([blogs.oracle](https://blogs.oracle.com/oracleuniversity/oracle-agentic-ai-foundations-training-certification-now-available)).
+
+> [!NOTE]  
+> **Curriculum Positioning**: This lesson is the practical build step. It bridges fundamental concepts (LangChain primitives and LCEL) with the upcoming "under the hood" deep dives that dissect tool schemas, tool-call parsing, and internal graph execution ([blogs.oracle](https://blogs.oracle.com/oracleuniversity/oracle-agentic-ai-foundations-training-certification-now-available)).
+
+---
+
+### 💡 Core Concept: Agent = Model + Harness
+
+At its core, an AI agent is a language model invoking tools within an execution loop until a task is completed. Everything surrounding that loop—the system prompt, available tools, state history, and execution middleware—is known as the **Harness**.
+
+$$\text{AI Agent} = \text{Model} + \text{Harness}$$
+
+$$\text{Harness} = \text{System Prompt} + \text{Tool Registries} + \text{State / Memory} + \text{Middleware} + \text{Loop Control}$$
+
+![LangChain First Agent Architecture](assets/langchain_first_agent_harness.jpg)
+
+LangChain simplifies this setup via the `create_agent` factory function, assembling the model and harness into a compiled, executable graph with minimal boilerplate ([reference.langchain](https://reference.langchain.com/python/langchain/agents/factory/create_agent)).
+
+---
+
+### 🧩 The 4 Building Blocks
+
+To construct a basic agent in LangChain, four core primitives must be defined:
+
+| Building Block | Parameter Name | Expected Format / Type | Primary Purpose & Role |
+| :--- | :--- | :--- | :--- |
+| **1. Model** | `model` | `"provider:model"` string or model instance | Central reasoning engine (e.g., `"openai:gpt-5.5"` or ChatModel object). |
+| **2. Tools** | `tools` | `List[Callable]` / `Tool` objects / Dicts | Capabilities accessible to the model (Python functions with docstrings). |
+| **3. System Prompt** | `system_prompt` | `str` or `SystemMessage` | Defines role, behavior, tone, constraints, and tool selection rules. |
+| **4. Factory Call** | `create_agent()` | Function call | Wires model, tools, and prompt into an executable agent graph ([reference.langchain](https://reference.langchain.com/python/langchain/agents/factory/create_agent)). |
+
+---
+
+### 💻 Minimal Working Example
+
+The canonical pattern for building a single-tool agent in LangChain:
+
+```python
+from langchain.agents import create_agent
+
+# 1. Define a tool function with a clear docstring
+def get_weather(city: str) -> str:
+    """Get weather for a given city."""
+    return f"It's always sunny in {city}!"
+
+# 2. Wire the agent graph using create_agent
+agent = create_agent(
+    model="openai:gpt-5.5",
+    tools=[get_weather],
+    system_prompt="You are a helpful assistant",
+)
+
+# 3. Invoke the agent with a user message trajectory
+result = agent.invoke(
+    {"messages": [{"role": "user", "content": "What's the weather in San Francisco?"}]}
+)
+```
+
+> **Why Tool Docstrings Matter**: LangChain extracts Python docstrings (e.g., `"""Get weather for a given city."""`) and presents them directly to the LLM as tool descriptions. Vague or missing docstrings degrade the model's ability to select the correct tool.
+
+---
+
+### 🔄 What Happens Inside `agent.invoke()`
+
+When `agent.invoke()` is called, LangChain executes a continuous reasoning loop between the **Agent Node** (LLM) and the **Tools Node** ([reference.langchain](https://reference.langchain.com/python/langchain/agents/factory/create_agent)):
+
+```mermaid
+flowchart TD
+    Start["User Calls agent.invoke(messages)"] --> AgentNode["1. Agent Node Calls LLM\n(Applies System Prompt + Message History)"]
+    AgentNode --> Decision{"2. Does AIMessage contain\ntool_calls?"}
+    Decision -- "Yes (tool_calls present)" --> ToolsNode["3. Tools Node Executes Requested Tool(s)"]
+    ToolsNode --> Append["4. Append Results as ToolMessage\nBack into Context History"]
+    Append --> AgentNode
+    Decision -- "No (Final Answer Ready)" --> Final["5. Return Full Message Trajectory\n& Final Output to User"]
+```
+
+#### Detailed Execution Sequence
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant AgentNode as Agent Node (LLM Engine)
+    participant ToolsNode as Tools Node (Python Callables)
+
+    User->>AgentNode: agent.invoke({"messages": [UserMessage]})
+    Note over AgentNode: Applies System Prompt + Formats Context
+    AgentNode->>AgentNode: LLM Inference
+    AgentNode-->>ToolsNode: Returns AIMessage with tool_calls: [get_weather(city='San Francisco')]
+    Note over ToolsNode: Executes get_weather('San Francisco')
+    ToolsNode-->>AgentNode: Returns ToolMessage(content="It's always sunny in San Francisco!")
+    Note over AgentNode: Appends ToolMessage to History & Re-invokes LLM
+    AgentNode->>AgentNode: Final LLM Generation (No tool_calls)
+    AgentNode-->>User: Final Response: "It's always sunny in San Francisco!"
+```
+
+#### Message Trajectory Breakdown
+
+| Step | Message Object Type | Generated By | Role / Content |
+| :--- | :--- | :--- | :--- |
+| **1** | `HumanMessage` / `user` | User / Client | Initial user query (e.g., *"What's the weather in San Francisco?"*). |
+| **2** | `AIMessage` / `assistant` | Agent Node (LLM) | Contains structured payload requesting tool execution (`tool_calls`). |
+| **3** | `ToolMessage` / `tool` | Tools Node (Runtime) | Contains raw execution output returned by the Python function. |
+| **4** | `AIMessage` / `assistant` | Agent Node (LLM) | Final natural language answer delivered back to the user. |
+
+---
+
+### 🧰 Multi-Tool Agent & Tool Selection Reasoning
+
+When multiple tools are provided, the **System Prompt** acts as the governing policy guiding the LLM's tool-choice logic ([dev](https://dev.to/manishmshiva/agents-101-build-and-deploy-ai-agents-to-production-using-langchain-535k)):
+
+```python
+SYSTEM_PROMPT = """You are an expert weather forecaster. You have access to two tools:
+- get_weather_for_location: use this to get the weather for a specific location
+- get_user_location: use this to find the user's location
+
+If a user asks for weather without specifying a location, use get_user_location first."""
+
+agent = create_agent(
+    model="openai:gpt-5.5",
+    tools=[get_user_location, get_weather_for_location],
+    system_prompt=SYSTEM_PROMPT,
+)
+```
+
+```mermaid
+flowchart TD
+    A["User: 'What is the weather today?'\n(Location unspecified)"] --> B["Agent Evaluates System Prompt"]
+    B --> C["Rule Triggered: Unspecified Location -> Call get_user_location First"]
+    C --> D["Step 1: Execute get_user_location()"]
+    D --> E["Observation: User location is 'Austin, TX'"]
+    E --> F["Step 2: Call get_weather_for_location(location='Austin, TX')"]
+    F --> G["Observation: '78°F, Sunny'"]
+    G --> H["Deliver Final Weather Forecast for Austin, TX"]
+```
+
+> **Key Design Insight**: Well-constructed system prompts instruct the LLM *when* and *in what order* to call tools. Reasoning logic is guided by instructions, not hardcoded conditional branches.
+
+---
+
+### 🎓 Key Teaching Points & Summary
+
+| Principle | Core Takeaway | Why It Matters |
+| :--- | :--- | :--- |
+| **1. Factory Simplicity** | `create_agent` reduces boilerplate to a few arguments. | Lowers barrier to entry while producing a standard, runnable graph ([jetbrains](https://blog.jetbrains.com/pycharm/2026/02/langchain-tutorial-2026/)). |
+| **2. Docstrings are Descriptions** | Function docstrings serve as tool descriptions for the LLM. | Clear docstrings ensure accurate tool selection by the model. |
+| **3. Plain Callable Tools** | Standard Python functions function directly as agent tools. | No complex class wrappers required for initial agent construction. |
+| **4. The Universal Loop** | $\text{Call Model} \rightarrow \text{Check Tool Calls} \rightarrow \text{Execute} \rightarrow \text{Append Result} \rightarrow \text{Repeat}$ | The core mechanics underlying virtually all LangChain tool-using agents. |
+
+---
+
 ## 📝 License
 
 This project is open-source under the [MIT License](LICENSE).
