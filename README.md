@@ -1173,6 +1173,8 @@ $$\text{Agent} = \text{Model} + \text{Harness}$$
 | **Model (LLM)** | Cognitive Decision Maker | Decides *what to do next*—whether to call a tool, which tool to select, what arguments to supply, or when the task is resolved. |
 | **Harness** | Operational Environment | Everything surrounding the model: prompt templates, tool registries, short-term scratchpad memory, conversational history, execution dispatchers, and termination guardrails. |
 
+![LangChain Agent Harness Architecture](assets/langchain_agent_harness_architecture.jpg)
+
 ```mermaid
 graph TB
     subgraph AgentSystem["🤖 Agent System"]
@@ -1203,6 +1205,8 @@ graph TB
 #### The Simplified Agent Loop Lifecycle
 
 The interaction between the model and the harness follows a continuous cycle:
+
+![Internal LangChain Agent Execution Loop](assets/langchain_agent_execution_loop_internal.jpg)
 
 ```mermaid
 flowchart TD
