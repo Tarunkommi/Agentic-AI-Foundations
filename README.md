@@ -128,7 +128,6 @@ Agentic AI represents a paradigm shift from passive model interaction to proacti
   - [🚚 MCP Transport Mechanisms: STDIO vs. Streamable HTTP](#-mcp-transport-mechanisms-stdio-vs-streamable-http)
   - [🔌 Why It Matters for Autonomous Agents](#-why-it-matters-for-autonomous-agents)
   - [🧠 The Core Mental Model in Short](#-the-core-mental-model-in-short)
-- [📝 License](#-license)
 
 </details>
 
@@ -2437,11 +2436,3 @@ MCP provides agents with a standardized **"plug-in" architecture**:
 > \mathbf{Server} &= \text{The secure gateway to tools and real-world data} \\
 > \mathbf{Tools / Resources / Prompts} &= \text{The capabilities and primitives the server offers}
 > \end{aligned}$$
-
----
-
-## 📝 License
-
-This project is open-source under the [MIT License](LICENSE).
-
-
