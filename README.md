@@ -107,6 +107,12 @@ Agentic AI represents a paradigm shift from passive model interaction to proacti
   - [📊 18. Key Concepts Reference Matrix](#-18-key-concepts-reference-matrix)
   - [🎯 19. Interview-Ready Technical Definitions](#-19-interview-ready-technical-definitions)
   - [🗺️ 20. The Universal Agent Mental Model](#️-20-the-universal-agent-mental-model)
+- [🔌 Introduction to Model Context Protocol (MCP)](#-introduction-to-model-context-protocol-mcp)
+  - [🎯 Module Overview & Objectives](#-module-overview--objectives)
+  - [🔑 Key Points & Architectural Purpose](#-key-points--architectural-purpose)
+  - [🔌 The "Plug-and-Play" Connection Layer ($M \times N \to M + N$)](#-the-plug-and-play-connection-layer-m-times-n-to-m--n)
+  - [🗺️ What This Module Covers](#️-what-this-module-covers)
+  - [🎓 Learning Outcomes](#-learning-outcomes)
 - [📝 License](#-license)
 
 </details>
@@ -2039,6 +2045,97 @@ flowchart TD
 > **The Fundamental Takeaway**: LangChain does not replace the agent mechanism—it standardizes, hardens, and organizes it. Beneath the abstractions, all agentic systems execute this exact loop:
 >
 > $$\text{Send Context} \longrightarrow \text{Receive Decision} \longrightarrow \text{Execute Tool} \longrightarrow \text{Append Observation} \longrightarrow \text{Repeat}$$
+
+---
+
+## 🔌 Introduction to Model Context Protocol (MCP)
+
+This module introduces the **Model Context Protocol (MCP)**, an open standard designed to connect AI agents seamlessly with external tools, data sources, and enterprise services ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232)).
+
+While foundational language models excel at text generation and in-memory reasoning, real-world utility requires agents to interact with external environments—querying live databases, reading file systems, triggering third-party APIs, and mutating enterprise system states. MCP establishes the unified, standardized protocol that makes this transition possible.
+
+---
+
+### 🎯 Module Overview & Objectives
+
+The primary objective of this module is to empower AI agents to transition beyond isolated conversational text generation and execute meaningful, secure, and goal-driven actions through standardized integrations ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232)).
+
+> *"MCP serves as the universal 'plug-and-play' connection layer, allowing AI agents to securely and consistently discover, invoke, and consume external tools and data."* ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232))
+
+---
+
+### 🔑 Key Points & Architectural Purpose
+
+| Key Dimension | Core Insight & Architectural Significance |
+| :--- | :--- |
+| **Purpose of MCP** | Provides a **common, open protocol** so agents can automatically discover and consume external capabilities without developers hand-crafting bespoke, brittle integrations for every distinct tool or service ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232)). |
+| **Why It Matters** | Solves the $M \times N$ integration bottleneck. Dramatically reduces architectural complexity by allowing an agent to access heterogeneous resources—such as **APIs, relational/vector databases, local and cloud filesystems, and enterprise platforms**—in a uniform, standard format ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232)). |
+| **Security & Isolation** | Provides clear boundaries between the model runtime and host environments. External capabilities reside on MCP servers with explicit capability negotiation, schema enforcement, and access controls. |
+| **Standardized Primitives** | Defines formal contracts for **Tools** (executable actions), **Resources** (data/content that can be read), and **Prompts** (reusable context templates). |
+
+---
+
+### 🔌 The "Plug-and-Play" Connection Layer ($M \times N \to M + N$)
+
+Before MCP, connecting $M$ different agent frameworks to $N$ different tools required $M \times N$ custom, proprietary connectors. With MCP acting as the universal standard (similar to USB-C for hardware or HTTP for web services), the integration complexity is reduced to $M + N$:
+
+```mermaid
+flowchart TD
+    subgraph Without_MCP["Fragmented Integration (M × N Complexity)"]
+        A1["Agent A"] -.->|Custom Code| T1["Database"]
+        A1 -.->|Custom Code| T2["File System"]
+        A1 -.->|Custom Code| T3["SaaS API"]
+        A2["Agent B"] -.->|Custom Code| T1
+        A2 -.->|Custom Code| T2
+        A2 -.->|Custom Code| T3
+    end
+
+    subgraph With_MCP["Standardized MCP Architecture (M + N Simplicity)"]
+        B1["Agent Client A"] ==>|Standard Protocol| MCP["Model Context Protocol (MCP)"]
+        B2["Agent Client B"] ==>|Standard Protocol| MCP
+        MCP ==>|MCP Server| S1["Database Server"]
+        MCP ==>|MCP Server| S2["Filesystem Server"]
+        MCP ==>|MCP Server| S3["Enterprise API Server"]
+    end
+```
+
+#### Comparison: Custom Integrations vs. Model Context Protocol
+
+| Feature / Trait | Bespoke / Custom Integrations | Model Context Protocol (MCP) |
+| :--- | :--- | :--- |
+| **Integration Architecture** | Point-to-point, tightly coupled glue code | Universal client-server protocol (JSON-RPC) |
+| **Tool Portability** | Tools built for Framework A cannot run on Framework B | Build an MCP server once, use across any MCP-compliant agent/host |
+| **Capability Discovery** | Hardcoded function schemas and tool registrations | Dynamic runtime discovery of tools, resources, and prompts |
+| **Maintenance Burden** | High; changes in tool APIs break each custom connector | Low; server exposes consistent protocol contracts to all clients |
+| **Security Boundaries** | Ad-hoc per integration; varies widely | Standardized permission scopes, process isolation, and sandboxing |
+
+---
+
+### 🗺️ What This Module Covers
+
+This module systematically guides developers through the principles and implementation of the Model Context Protocol ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232)):
+
+1. **Meaning and Core Components of MCP**:
+   - Deconstructing the MCP specification: **MCP Hosts** (applications initiating requests like IDEs or agent runtimes), **MCP Clients** (internal protocol adapters), and **MCP Servers** (programs exposing tools, resources, and prompts).
+   - How protocol negotiation, transport layers (stdio, SSE), and message schemas operate.
+2. **Adding an MCP Server to an Agent**:
+   - Configuring an agent runtime to connect to local or remote MCP servers.
+   - Dynamic tool discovery and binding MCP tool schemas to model reasoning loops.
+   - Handling execution requests, tool parameter validation, and observation ingestion.
+3. **Real-World Examples & Practical Demonstrations**:
+   - Hands-on scenarios connecting agents to external databases, documentation stores, file systems, and enterprise services using production-ready MCP servers.
+
+---
+
+### 🎓 Learning Outcomes
+
+Upon completing this module, you will be equipped to:
+
+- [x] **Understand MCP Architecture**: Articulate how MCP establishes a universal communication layer between models and external services.
+- [x] **Deconstruct Protocol Primitives**: Distinguish between Tools (callable actions), Resources (readable data contexts), and Prompts (contextual templates).
+- [x] **Integrate MCP Servers**: Connect, configure, and register standard MCP servers into autonomous agent workflows.
+- [x] **Scale Agent Capabilities**: Build composable, reusable agent systems capable of accessing enterprise databases, APIs, and workflows without vendor lock-in.
+- [x] **Apply in Hands-on Exercises**: Transition directly into agent-building labs and projects with standardized external integrations.
 
 ---
 
