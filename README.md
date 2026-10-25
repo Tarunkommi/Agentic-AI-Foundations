@@ -21,12 +21,9 @@ Agentic AI represents a paradigm shift from passive model interaction to proacti
 <summary><b>Click to expand / collapse full contents</b></summary>
 
 - [📌 Overview & Core Concepts](#-overview--core-concepts)
-- [🎓 Course Curriculum: Oracle Agentic AI Foundations](#-course-curriculum-oracle-agentic-ai-foundations)
+- [🎓 Course Curriculum: Agentic AI Foundations](#-course-curriculum-agentic-ai-foundations)
   - [🎯 What You’ll Learn](#-what-youll-learn)
   - [📚 Course Structure](#-course-structure)
-- [🛠️ Getting Started](#️-getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Setup](#setup)
 - [🧠 How Large Language Models (LLMs) Are Built and Deployed](#-how-large-language-models-llms-are-built-and-deployed)
   - [1. The Four Stages of LLM Development](#1-the-four-stages-of-llm-development)
   - [2. Pre-training Data & Scale](#2-pre-training-data--scale)
@@ -133,44 +130,25 @@ Agentic AI represents a paradigm shift from passive model interaction to proacti
 
 ---
 
-## 🎓 Course Curriculum: Oracle Agentic AI Foundations
+## 🎓 Course Curriculum: Agentic AI Foundations
 
-This repository aligns with and builds upon concepts from the [Oracle Agentic AI Foundations](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946) course.
+This repository aligns with and builds upon foundational concepts in modern agentic architectures.
 
 ### 🎯 What You’ll Learn
-The course covers AI-agent architecture, LLMs, tools, execution loops, reasoning patterns, safety guardrails, LangChain, the Model Context Protocol (MCP), and the OpenAI Responses API and Agents SDK. It then applies these topics to OCI Enterprise AI and Oracle AI Database ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
+The course covers AI-agent architecture, LLMs, tools, execution loops, reasoning patterns, safety guardrails, LangChain, the Model Context Protocol (MCP), and the OpenAI Responses API and Agents SDK. It then applies these topics to Enterprise AI and AI Database environments.
 
-By the end, you should be able to design agents with LangChain and the OpenAI agent stack, incorporate MCP into workflows, build agents on OCI Enterprise AI Platform, and use Oracle AI Database capabilities for agentic solutions ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
+By the end, you should be able to design agents with LangChain and the OpenAI agent stack, incorporate MCP into workflows, build agents on enterprise AI platforms, and use AI Database capabilities for agentic solutions.
 
 ---
 
 ### 📚 Course Structure
 
-1. **Introduction to AI Agents**: Agent definitions, components, reasoning, a first-agent walkthrough, and guardrails ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
-2. **LangChain for AI Agents**: LangChain basics, building an agent, demos, and internal agent behavior ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
-3. **Introduction to MCP**: MCP concepts and components, connecting an MCP server to an agent, and practical server examples ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
-4. **OpenAI Responses API and Agents SDK**: OpenAI agent stack, APIs, SDKs, tool/function calling, multi-agent handoffs, safety, and a customer-support-agent demo ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
-5. **Agentic AI for OCI Enterprise AI**: Agent lifecycle and runtime, OCI Enterprise AI Platform and Agents, deployment, and scaling ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
-6. **Agentic AI for Oracle AI Database**: Vector search, Private Agent Factory, and an Autonomous AI Database MCP server ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/273946)).
-
----
-
-## 🛠️ Getting Started
-
-### Prerequisites
-
-- Python 3.10+ / Node.js 18+
-- API Credentials for target LLM providers
-
-### Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/Tarunkommi/Agentic-AI-Foundations.git
-
-# Navigate into the project directory
-cd Agentic-AI-Foundations
-```
+1. **Introduction to AI Agents**: Agent definitions, components, reasoning, a first-agent walkthrough, and guardrails.
+2. **LangChain for AI Agents**: LangChain basics, building an agent, demos, and internal agent behavior.
+3. **Introduction to MCP**: MCP concepts and components, connecting an MCP server to an agent, and practical server examples.
+4. **OpenAI Responses API and Agents SDK**: OpenAI agent stack, APIs, SDKs, tool/function calling, multi-agent handoffs, safety, and a customer-support-agent demo.
+5. **Agentic AI for Enterprise AI**: Agent lifecycle and runtime, Enterprise AI Platform and Agents, deployment, and scaling.
+6. **Agentic AI for AI Database**: Vector search, Private Agent Factory, and an Autonomous AI Database MCP server.
 
 ---
 
@@ -364,7 +342,7 @@ It translates pre-training pattern recognition, refined through SFT and RLHF ali
 
 ## 🤖 What is an AI Agent?
 
-An **AI Agent** transforms a standalone language model into an autonomous problem solver capable of executing complex goals ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271870)):
+An **AI Agent** transforms a standalone language model into an autonomous problem solver capable of executing complex goals:
 
 $$\text{AI Agent} = \text{LLM} + \text{Tools} + \text{Loop} + \text{Reasoning Patterns}$$
 
@@ -390,7 +368,7 @@ Perceive (Input/Observation) ──► Reason (Select Next Step) ──► Act (
 ### ⚡ Key Contrast: Chatbot vs. AI Agent
 
 - **Chatbot**: $\text{Prompt} \longrightarrow \text{LLM} \longrightarrow \text{Single Answer}$
-- **Agent**: $\text{Prompt} \longrightarrow \text{LLM} \longrightarrow \text{Choose Tool} \longrightarrow \text{Execute} \longrightarrow \text{Observe} \longrightarrow \text{LLM Again} \longrightarrow \text{More Tool Calls} \longrightarrow \text{Final Answer}$ ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271870))
+- **Agent**: $\text{Prompt} \longrightarrow \text{LLM} \longrightarrow \text{Choose Tool} \longrightarrow \text{Execute} \longrightarrow \text{Observe} \longrightarrow \text{LLM Again} \longrightarrow \text{More Tool Calls} \longrightarrow \text{Final Answer}$
 
 #### Standalone LLM vs. (LLM-based) AI Agent
 
@@ -413,13 +391,13 @@ Perceive (Input/Observation) ──► Reason (Select Next Step) ──► Act (
 
 - **Automates Multi-Step Tasks**: Handles complex workflows autonomously instead of just answering questions.
 - **Interacts with Real Systems**: Connects directly with databases, enterprise applications, and cloud services.
-- **Enables Goal-Oriented Behavior**: Keeps working and iterating until a defined objective is fully achieved ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271870)).
+- **Enables Goal-Oriented Behavior**: Keeps working and iterating until a defined objective is fully achieved.
 
 ---
 
 ## 🧩 AI Agent Core Components
 
-An AI agent is built by combining an LLM with instructions, tools, memory or state, and an execution loop. These components enable it to understand a goal, select actions, use external systems, evaluate results, and produce a useful final response ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271870)).
+An AI agent is built by combining an LLM with instructions, tools, memory or state, and an execution loop. These components enable it to understand a goal, select actions, use external systems, evaluate results, and produce a useful final response.
 
 ![AI Agent Core Components Architecture](assets/ai_agent_core_components.png)
 
@@ -465,7 +443,7 @@ Instructions define the agent's role, boundaries, style, and operational objecti
 
 ### 3. Tools & Tool Calling
 
-Tools give an agent the ability to interact with the world beyond text generation ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271870)).
+Tools give an agent the ability to interact with the world beyond text generation.
 
 #### Common Tool Types
 - **Database Queries**: Retrieving enterprise relational or vector data.
@@ -597,7 +575,7 @@ Below is an enterprise workflow showing how core components cooperate to process
 
 ## 🧠 AI Agent Reasoning Patterns
 
-**Reasoning patterns** are structured methods that guide how an AI agent thinks through a task, chooses actions, uses tools, evaluates intermediate results, and reaches a final answer. This core topic is covered in the 8-minute lesson *Reasoning Patterns in AI Agents* in the **Introduction to AI Agents** module of Oracle’s [Agentic AI Foundations (2026)](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271872) course.
+**Reasoning patterns** are structured methods that guide how an AI agent thinks through a task, chooses actions, uses tools, evaluates intermediate results, and reaches a final answer. This core topic is covered in the **Introduction to AI Agents** module.
 
 ![AI Agent Reasoning Patterns](assets/agent_reasoning_patterns.jpg)
 
@@ -756,7 +734,7 @@ flowchart TD
 
 ## 🛡️ Safety and Guardrails
 
-This core topic belongs to the **Introduction to AI Agents** module of Oracle’s [Agentic AI Foundations (2026)](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271874) course. Its purpose is to explain how to make agents safer, more reliable, and appropriately constrained when interacting with users, tools, and enterprise data.
+This core topic belongs to the **Introduction to AI Agents** module. Its purpose is to explain how to make agents safer, more reliable, and appropriately constrained when interacting with users, tools, and enterprise data.
 
 ---
 
@@ -764,7 +742,7 @@ This core topic belongs to the **Introduction to AI Agents** module of Oracle’
 
 An AI agent can reason, choose actions, call external tools, and produce outputs. Because those actions directly impact live data, production systems, and human users, **safety must be designed into the agent from the beginning** rather than treated as an afterthought or added only after deployment.
 
-> **Definition**: **Guardrails** are the controls and boundaries that define what an agent is allowed to do, what it must refuse, and when it should escalate a task for human review ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271874)).
+> **Definition**: **Guardrails** are the controls and boundaries that define what an agent is allowed to do, what it must refuse, and when it should escalate a task for human review.
 
 $$\text{Safe AI Agent} = \text{LLM Reasoning} + \text{Explicit Boundaries} + \text{Layered Guardrails} + \text{Human Oversight}$$
 
@@ -970,7 +948,7 @@ In short, this module systematically moves from **LangChain fundamentals** to **
 
 ## 🔗 Introduction to LangChain
 
-**LangChain** is a framework for building applications powered by large language models (LLMs), especially AI agents. It helps developers connect an LLM to prompts, tools, external data, memory, and multi-step workflows ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271875)).
+**LangChain** is a framework for building applications powered by large language models (LLMs), especially AI agents. It helps developers connect an LLM to prompts, tools, external data, memory, and multi-step workflows.
 
 ![LangChain Architecture Overview](assets/langchain_architecture.png)
 
@@ -978,7 +956,7 @@ In short, this module systematically moves from **LangChain fundamentals** to **
 
 ### ❓ Why LangChain?
 
-An LLM alone can generate text, but it cannot reliably access current information, call APIs, query databases, or complete multi-step tasks by itself. LangChain provides reusable components to turn an LLM into an agent that can reason, choose tools, act, and use results in later steps ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271875)).
+An LLM alone can generate text, but it cannot reliably access current information, call APIs, query databases, or complete multi-step tasks by itself. LangChain provides reusable components to turn an LLM into an agent that can reason, choose tools, act, and use results in later steps.
 
 ---
 
@@ -1120,10 +1098,10 @@ sequenceDiagram
 
 ## 🛠️ Building Your First Agent Using LangChain
 
-This hands-on lesson comes from Module 2 (**"LangChain for AI Agents"**) of Oracle's [Agentic AI Foundations (2026)](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations-2026/163240/271876) course ([blogs.oracle](https://blogs.oracle.com/oracleuniversity/oracle-agentic-ai-foundations-training-certification-now-available)).
+This hands-on lesson comes from Module 2 (**"LangChain for AI Agents"**).
 
 > [!NOTE]  
-> **Curriculum Positioning**: This lesson is the practical build step. It bridges fundamental concepts (LangChain primitives and LCEL) with the upcoming "under the hood" deep dives that dissect tool schemas, tool-call parsing, and internal graph execution ([blogs.oracle](https://blogs.oracle.com/oracleuniversity/oracle-agentic-ai-foundations-training-certification-now-available)).
+> **Curriculum Positioning**: This lesson is the practical build step. It bridges fundamental concepts (LangChain primitives and LCEL) with the upcoming "under the hood" deep dives that dissect tool schemas, tool-call parsing, and internal graph execution.
 
 ---
 
@@ -2064,7 +2042,7 @@ flowchart TD
 
 ## 🔌 Introduction to Model Context Protocol (MCP)
 
-This module introduces the **Model Context Protocol (MCP)**, an open standard designed to connect AI agents seamlessly with external tools, data sources, and enterprise services ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232)).
+This module introduces the **Model Context Protocol (MCP)**, an open standard designed to connect AI agents seamlessly with external tools, data sources, and enterprise services.
 
 While foundational language models excel at text generation and in-memory reasoning, real-world utility requires agents to interact with external environments—querying live databases, reading file systems, triggering third-party APIs, and mutating enterprise system states. MCP establishes the unified, standardized protocol that makes this transition possible.
 
@@ -2072,9 +2050,9 @@ While foundational language models excel at text generation and in-memory reason
 
 ### 🎯 Module Overview & Objectives
 
-The primary objective of this module is to empower AI agents to transition beyond isolated conversational text generation and execute meaningful, secure, and goal-driven actions through standardized integrations ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232)).
+The primary objective of this module is to empower AI agents to transition beyond isolated conversational text generation and execute meaningful, secure, and goal-driven actions through standardized integrations.
 
-> *"MCP serves as the universal 'plug-and-play' connection layer, allowing AI agents to securely and consistently discover, invoke, and consume external tools and data."* ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232))
+> *"MCP serves as the universal 'plug-and-play' connection layer, allowing AI agents to securely and consistently discover, invoke, and consume external tools and data."*
 
 ---
 
@@ -2082,8 +2060,8 @@ The primary objective of this module is to empower AI agents to transition beyon
 
 | Key Dimension | Core Insight & Architectural Significance |
 | :--- | :--- |
-| **Purpose of MCP** | Provides a **common, open protocol** so agents can automatically discover and consume external capabilities without developers hand-crafting bespoke, brittle integrations for every distinct tool or service ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232)). |
-| **Why It Matters** | Solves the $M \times N$ integration bottleneck. Dramatically reduces architectural complexity by allowing an agent to access heterogeneous resources—such as **APIs, relational/vector databases, local and cloud filesystems, and enterprise platforms**—in a uniform, standard format ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232)). |
+| **Purpose of MCP** | Provides a **common, open protocol** so agents can automatically discover and consume external capabilities without developers hand-crafting bespoke, brittle integrations for every distinct tool or service. |
+| **Why It Matters** | Solves the $M \times N$ integration bottleneck. Dramatically reduces architectural complexity by allowing an agent to access heterogeneous resources—such as **APIs, relational/vector databases, local and cloud filesystems, and enterprise platforms**—in a uniform, standard format. |
 | **Security & Isolation** | Provides clear boundaries between the model runtime and host environments. External capabilities reside on MCP servers with explicit capability negotiation, schema enforcement, and access controls. |
 | **Standardized Primitives** | Defines formal contracts for **Tools** (executable actions), **Resources** (data/content that can be read), and **Prompts** (reusable context templates). |
 
@@ -2127,7 +2105,7 @@ flowchart TD
 
 ### 🗺️ What This Module Covers
 
-This module systematically guides developers through the principles and implementation of the Model Context Protocol ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232)):
+This module systematically guides developers through the principles and implementation of the Model Context Protocol:
 
 1. **Meaning and Core Components of MCP**:
    - Deconstructing the MCP specification: **MCP Hosts** (applications initiating requests like IDEs or agent runtimes), **MCP Clients** (internal protocol adapters), and **MCP Servers** (programs exposing tools, resources, and prompts).
@@ -2155,7 +2133,7 @@ Upon completing this module, you will be equipped to:
 
 ## 🌐 What Is Model Context Protocol (MCP)?
 
-The **Model Context Protocol (MCP)** is an open standard that provides a universal, structured way for AI agents to connect to external tools, data sources, and enterprise services ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232)).
+The **Model Context Protocol (MCP)** is an open standard that provides a universal, structured way for AI agents to connect to external tools, data sources, and enterprise services.
 
 Instead of relying solely on the static knowledge embedded in an LLM's parametric weights, MCP serves as the **operational bridge** that connects reasoning agents to real-world systems, enabling them to execute actions, retrieve fresh contextual data, and operate safely within enterprise perimeters.
 
@@ -2183,7 +2161,7 @@ MCP acts as the standardized interface between the agent's cognition and the ext
 
 As organizations scale their AI initiatives, agents require access to an expanding ecosystem of tools and data repositories:
 - REST & GraphQL APIs
-- Relational and Vector Databases (e.g., Oracle AI Database, PostgreSQL)
+- Relational and Vector Databases (e.g., PostgreSQL, Autonomous Vector DBs)
 - Local and Cloud Filesystems
 - Enterprise Applications (e.g., GitHub, Slack, Jira, Salesforce)
 
@@ -2263,7 +2241,7 @@ Based on the core MCP specification:
 
 | Benefit | Architectural Impact |
 | :--- | :--- |
-| **Universal Interoperability** | Build an MCP server once (e.g., an Oracle Database connector or Git server) and connect it immediately to Claude Desktop, VS Code, LangChain agents, or custom enterprise workflows. |
+| **Universal Interoperability** | Build an MCP server once (e.g., an enterprise database connector or Git server) and connect it immediately to Claude Desktop, VS Code, LangChain agents, or custom enterprise workflows. |
 | **Eliminated Redundancy** | Stops developers from repeatedly writing custom API wrappers and data parsers for every new AI application. |
 | **Dynamic Capability Expansion** | Add new tools, databases, or API integrations to an agent simply by attaching an MCP server in configuration—**no agent code redesign or model retraining required**. |
 | **Ecosystem Portability** | Leverage community-maintained MCP servers for standard developer tools, cloud providers, and databases out of the box. |
@@ -2289,7 +2267,7 @@ In enterprise deployments, autonomous AI agents cannot be given unconstrained or
 
 ## 🧩 MCP Core Components & Primitives
 
-The **Model Context Protocol (MCP)** establishes an open standard that lets AI applications and agents access external systems—such as databases, file systems, APIs, and enterprise tools—in a uniform, consistent manner ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232)).
+The **Model Context Protocol (MCP)** establishes an open standard that lets AI applications and agents access external systems—such as databases, file systems, APIs, and enterprise tools—in a uniform, consistent manner.
 
 Instead of engineering a separate, brittle integration for every individual tool, an agent utilizes MCP-compatible servers that expose external capabilities through one unified protocol.
 
