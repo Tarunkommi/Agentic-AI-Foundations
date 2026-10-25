@@ -122,6 +122,12 @@ Agentic AI represents a paradigm shift from passive model interaction to proacti
   - [🚀 Benefits for Agentic Systems](#-benefits-for-agentic-systems)
   - [🏢 Enterprise Relevance & Production Safety](#-enterprise-relevance--production-safety)
   - [📌 In One Line](#-in-one-line)
+- [🧩 MCP Core Components & Primitives](#-mcp-core-components--primitives)
+  - [🏗️ The 4 Foundational Components](#️-the-4-foundational-components)
+  - [🎛️ The 3 Core Primitives: Tools, Resources, and Prompts](#️-the-3-core-primitives-tools-resources-and-prompts)
+  - [🚚 MCP Transport Mechanisms: STDIO vs. Streamable HTTP](#-mcp-transport-mechanisms-stdio-vs-streamable-http)
+  - [🔌 Why It Matters for Autonomous Agents](#-why-it-matters-for-autonomous-agents)
+  - [🧠 The Core Mental Model in Short](#-the-core-mental-model-in-short)
 - [📝 License](#-license)
 
 </details>
@@ -2279,6 +2285,158 @@ In enterprise deployments, autonomous AI agents cannot be given unconstrained or
 ### 📌 In One Line
 
 > **MCP is a standard “connection layer” that lets AI agents discover and use external tools and data through MCP servers.**
+
+---
+
+## 🧩 MCP Core Components & Primitives
+
+The **Model Context Protocol (MCP)** establishes an open standard that lets AI applications and agents access external systems—such as databases, file systems, APIs, and enterprise tools—in a uniform, consistent manner ([mylearn.oracle](https://mylearn.oracle.com/ou/course/oracle-agentic-ai-foundations/163240/273232)).
+
+Instead of engineering a separate, brittle integration for every individual tool, an agent utilizes MCP-compatible servers that expose external capabilities through one unified protocol.
+
+---
+
+### 🏗️ The 4 Foundational Components
+
+The MCP architecture comprises four primary building blocks that separate concerns between the model reasoning environment, connection management, protocol transport, and external execution:
+
+```mermaid
+flowchart LR
+    subgraph HostEnv["MCP HOST"]
+        LLM["LLM (Reasoning Engine)"]
+        subgraph ClientEnv["MCP CLIENT"]
+            MC["Protocol Manager\n(Translates Model Requests)"]
+        end
+        LLM <--> MC
+    end
+
+    subgraph Transport["TRANSPORT LAYER"]
+        TL["JSON-RPC 2.0\n(STDIO or Streamable HTTP/SSE)"]
+    end
+
+    subgraph ServerEnv["MCP SERVER"]
+        MS["Capability Wrapper\n(Exposes Tools, Resources, Prompts)"]
+    end
+
+    subgraph External["EXTERNAL SYSTEMS"]
+        ES["Databases, APIs, Files, SaaS"]
+    end
+
+    MC <==> TL
+    TL <==> MS
+    MS <--> ES
+```
+
+| Component | Role & What It Does |
+| :--- | :--- |
+| **MCP Host** | The top-level AI application or agent environment containing the LLM (e.g., Claude Desktop, VS Code, custom agent harness). It coordinates user requests, conversation history, context window budgets, and tool execution policies. |
+| **MCP Client** | Lives inside the host and manages communication with one or more MCP servers. It translates model requests into protocol messages, handles responses, and passes observations back to context. |
+| **MCP Server** | A standalone program that wraps an external system or service, exposing its capabilities, data, and actions in a standardized, discoverable form. |
+| **Transport Layer** | Transports **JSON-RPC 2.0** messages between client and server. Common implementations include local **stdio** (subprocesses) and remote **Streamable HTTP / SSE** transports. |
+
+---
+
+### 🎛️ The 3 Core Primitives: Tools, Resources, and Prompts
+
+An MCP server exposes its functionality through **three core primitives**, each addressing a distinct operational need in agent workflows:
+
+```mermaid
+flowchart TD
+    subgraph Primitives["MCP Server Core Primitives"]
+        direction LR
+        subgraph T["🔨 Tools"]
+            direction TB
+            T1["<b>Model-Controlled</b>"]
+            T2["Functions the AI calls to perform actions"]
+            T3["<code>create_issue()</code><br/><code>send_message()</code><br/><code>query_database()</code><br/><code>run_test()</code>"]
+            T4["<b>Mental Model: Do Something</b><br/><i>(Like POST endpoints — produce side effects)</i>"]
+            T1 --> T2 --> T3 --> T4
+        end
+
+        subgraph R["📄 Resources"]
+            direction TB
+            R1["<b>Application-Controlled</b>"]
+            R2["Structured data the AI reads for context"]
+            R3["<code>file://project/readme.md</code><br/><code>db://users/schema</code><br/><code>api://config/settings</code>"]
+            R4["<b>Mental Model: Read Something</b><br/><i>(Like GET endpoints — load info into context)</i>"]
+            R1 --> R2 --> R3 --> R4
+        end
+
+        subgraph P["💬 Prompts"]
+            direction TB
+            P1["<b>User-Controlled</b>"]
+            P2["Templates that structure LLM interactions"]
+            P3["<code>bug_report_template</code><br/><code>code_review_prompt</code><br/><code>summarize_doc_template</code>"]
+            P4["<b>Mental Model: Structure Something</b><br/><i>(Like slash commands — user-invoked workflows)</i>"]
+            P1 --> P2 --> P3 --> P4
+        end
+    end
+```
+
+#### Detailed Breakdown of Primitives:
+
+| Primitive | Controller | Purpose & Technical Function | Real-World Examples | Web API Analogy |
+| :--- | :--- | :--- | :--- | :--- |
+| **Tools** | **Model-Controlled** | Callable functions that the LLM decides to execute during reasoning loops to perform computations or produce real-world side effects. Each tool has a `name`, `description`, and `inputSchema` (JSON Schema) so the model knows when and how to invoke it. | `query_database()`, `create_issue()`, `send_message()`, `run_test()` | **POST Endpoint** (executes logic, alters state, triggers actions) |
+| **Resources** | **Application-Controlled** | Read-only context provided by the server to ground the model. Resources are identified by standardized URI schemes (`file://`, `db://`, `api://`) and load documentation, schemas, logs, or database rows directly into the context window. | `file://project/readme.md`, `db://users/schema`, `api://config/settings` | **GET Endpoint** (idempotent, reads data, returns content) |
+| **Prompts** | **User-Controlled** | Pre-engineered prompt templates and guided multi-turn workflows exposed by the server. Users trigger them via UI elements or slash commands to standardize how the LLM approaches specific domain tasks. | `bug_report_template`, `code_review_prompt`, `summarize_doc_template` | **Slash Command / Macro** (structures prompt context and parameters) |
+
+---
+
+### 🚚 MCP Transport Mechanisms: STDIO vs. Streamable HTTP
+
+MCP decouples protocol messages from the underlying network or IPC transport. All communications utilize **JSON-RPC 2.0**, delivered through one of two primary transport mechanisms:
+
+```
+┌───────────────────────────────────────────────────────────┐      ┌───────────────────────────────────────────────────────────┐
+│                     STDIO Transport                       │      │                Streamable HTTP Transport                  │
+│                                                           │      │                                                           │
+│  ┌───────────────┐     stdin (request)    ┌────────────┐  │      │  ┌───────────────┐    HTTP POST (request)  ┌────────────┐  │
+│  │  MCP Client   ├───────────────────────►│ MCP Server │  │      │  │  MCP Client   ├────────────────────────►│ MCP Server │  │
+│  │ (Host App)    │◄───────────────────────┤ (Process)  │  │      │  │ (Host App)    │◄────────────────────────┤ (Service)  │  │
+│  └───────────────┘     stdout (response)  └────────────┘  │      │  └───────────────┘    SSE Stream (events)  └────────────┘  │
+└───────────────────────────────────────────────────────────┘      └───────────────────────────────────────────────────────────┘
+```
+
+#### Detailed Comparison of Transports:
+
+| Characteristic | STDIO Transport | Streamable HTTP Transport |
+| :--- | :--- | :--- |
+| **Process Model** | Host spawns the server as a local child process. | Server runs as an independent, persistent HTTP web service. |
+| **Data Flow** | Messages flow directly through standard input (`stdin`) and standard output (`stdout`). | Client sends requests via **HTTP POST**; Server streams responses and events via **Server-Sent Events (SSE)**. |
+| **Latency & Overhead** | **Fastest option** with zero network overhead (pure inter-process pipe). | Subject to network round-trip latency and HTTP connection overhead. |
+| **Deployment Location** | Must run on the **same physical machine** as the host application. | Supports **remote, distributed, and cloud-native** deployments (Kubernetes, serverless, microservices). |
+| **Concurrency Model** | Strictly **one client per server instance** (dedicated process lifecycle). | **Multiple clients** can connect to and share the same server instance. |
+| **Authentication** | Inherits local OS environment and file system permissions. | Uses standard HTTP authentication mechanisms (**OAuth 2.0, Bearer tokens, API keys**). |
+| **Best Used For** | Local developer tooling: file system access, local Git commands, local shell execution, SQLite. | Cloud SaaS integrations, shared corporate databases, enterprise microservices, collaborative AI systems. |
+
+---
+
+### 🔌 Why It Matters for Autonomous Agents
+
+MCP provides agents with a standardized **"plug-in" architecture**:
+
+1. **Clear Division of Responsibility**:
+   - The **Host** determines what the user requires and governs agent state.
+   - The **Client** negotiates connections and dispatches requests to the appropriate server.
+   - The **Server** supplies either factual context (**Resources**) or action execution (**Tools**).
+2. **Decoupled Security**:
+   - Security policies and data access boundaries are enforced at the server level.
+   - Developers do not need to hand over sensitive corporate credentials directly to the AI agent runtime.
+3. **Enterprise Reusability**:
+   - Write an MCP server for your database or internal API once.
+   - Connect it to Claude Desktop, VS Code, LangChain agents, or custom backend services with zero code modifications.
+
+---
+
+### 🧠 The Core Mental Model in Short
+
+> $$\begin{aligned}
+> \mathbf{Host} &= \text{The agent application and reasoning environment} \\
+> \mathbf{Client} &= \text{The protocol connection and dispatch manager} \\
+> \mathbf{Server} &= \text{The secure gateway to tools and real-world data} \\
+> \mathbf{Tools / Resources / Prompts} &= \text{The capabilities and primitives the server offers}
+> \end{aligned}$$
 
 ---
 
